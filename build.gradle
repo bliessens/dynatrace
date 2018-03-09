@@ -1,0 +1,43 @@
+buildscript {
+    ext {
+        springBootVersion = '1.5.7.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'be.cheops.axon'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    // Spring Boot
+    compile('org.springframework.boot:spring-boot-starter')
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+
+    // Axon
+    compile 'org.axonframework:axon-spring-boot-autoconfigure:3.0.7'
+    compile 'org.axonframework:axon-distributed-commandbus-jgroups:3.0.7'
+    compile 'org.jgroups:jgroups:3.6.14.Final'
+
+    compile project(":injector")
+
+    runtime 'org.hsqldb:hsqldb'
+
+    testCompile 'org.springframework.boot:spring-boot-starter-test'
+
+}

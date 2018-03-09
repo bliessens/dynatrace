@@ -1,0 +1,3 @@
+rootProject.name = 'dynatracing'
+
+include 'injector'
