@@ -10,7 +10,7 @@ import org.axonframework.spring.stereotype.Aggregate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static be.cheops.axon.dynetracing.infrastructure.TracingJGroupsConnector.TRACE_ID;
+import static be.cegeka.vconsult.poct.infrastructure.trace.TokenExtractionInterceptorFactory.TRACE_ID;
 import static org.axonframework.commandhandling.model.AggregateLifecycle.apply;
 
 @Aggregate
@@ -24,7 +24,7 @@ class MyAggregate {
     @CommandHandler
     public MyAggregate(CreateCommand command, @MetaDataValue(value = TRACE_ID, required = false) String traceId) {
         if (traceId != null) {
-            LOG.error("Command still has traceId {}",traceId);
+            LOG.error("Command still has traceId {}", traceId);
         }
         apply(new CreatedEvent(command.getId()));
     }

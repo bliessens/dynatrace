@@ -1,4 +1,4 @@
-package be.cheops.axon.dynetracing.infrastructure;
+package be.cegeka.vconsult.poct.infrastructure;
 
 import com.dynatrace.oneagent.sdk.api.OneAgentSDK;
 import com.dynatrace.oneagent.sdk.api.OutgoingRemoteCallTracer;
@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.UUID;
 
 @Component
-public class TracingJGroupsConnector implements CommandBusConnector {
+class TracingJGroupsConnector implements CommandBusConnector {
 
     public static final String TRACE_ID = "traceId";
 
@@ -32,6 +32,7 @@ public class TracingJGroupsConnector implements CommandBusConnector {
 
     @Autowired
     public TracingJGroupsConnector(OneAgentSDK oneAgent, JGroupsConnector delegate) {
+        LOG.info("Using " + TracingJGroupsConnector.class.getSimpleName());
         this.delegate = delegate;
         this.agent = oneAgent;
     }

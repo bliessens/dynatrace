@@ -1,4 +1,4 @@
-package be.cheops.axon.dynetracing.trace;
+package be.cegeka.vconsult.poct.infrastructure.trace;
 
 public class TokenExtractionInterceptorFactoryTest {
 

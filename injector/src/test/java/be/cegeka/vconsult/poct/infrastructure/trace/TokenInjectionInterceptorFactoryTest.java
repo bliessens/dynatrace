@@ -1,4 +1,4 @@
-package be.cheops.axon.dynetracing.trace;
+package be.cegeka.vconsult.poct.infrastructure.trace;
 
 import com.dynatrace.oneagent.sdk.api.OneAgentSDK;
 import com.dynatrace.oneagent.sdk.api.OutgoingRemoteCallTracer;
@@ -13,9 +13,6 @@ import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
-
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.*;
 
 public class TokenInjectionInterceptorFactoryTest {
 
