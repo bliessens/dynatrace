@@ -1,5 +1,6 @@
 package be.cegeka.vconsult.poct.infrastructure;
 
+import be.cegeka.vconsult.poct.infrastructure.trace.DynaTraceAgentFactory;
 import be.cegeka.vconsult.poct.infrastructure.trace.TokenExtractionInterceptorFactory;
 import com.dynatrace.oneagent.sdk.api.OneAgentSDK;
 import com.thoughtworks.xstream.XStream;
@@ -59,6 +60,16 @@ public class InjectorConfiguration {
         final SimpleCommandBus bus = new SimpleCommandBus(axonTransactionManager, NoOpMessageMonitor.INSTANCE);
         bus.registerHandlerInterceptor(interceptorFactory.newExtractingInterceptor());
         return bus;
+    }
+
+    @Bean
+    public TokenExtractionInterceptorFactory extractionInterceptorFactory(@Value("${distributed.clustername}") String clusterName) {
+        return new TokenExtractionInterceptorFactory(clusterName);
+    }
+
+    @Bean
+    public DynaTraceAgentFactory sdkFactory() {
+        return new DynaTraceAgentFactory();
     }
 
     static class CommandSerializerFactory {
