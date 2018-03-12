@@ -39,6 +39,7 @@ public class TracingJGroupsConnectorTest {
         }
 
         InOrder ordered = inOrder(tracerMock, delegateConnector);
+        ordered.verify(tracerMock).setProtocolName(anyString());
         ordered.verify(tracerMock).start();
         ordered.verify(tracerMock).getDynatraceStringTag();
         ordered.verify(delegateConnector).send(any(), any(), any());

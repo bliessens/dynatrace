@@ -65,6 +65,7 @@ class TracingJGroupsConnector implements CommandBusConnector {
             delegate.send(destination, command);
         } else {
             final OutgoingRemoteCallTracer tracer = agent.traceOutgoingRemoteCall("dispatchCommand", delegate.getNodeName(), "DistributedCommandBus", ChannelType.TCP_IP, "jgroups://" + destination.name());
+            tracer.setProtocolName("jgroups/custom");
             tracer.start();
             String tag = tracer.getDynatraceStringTag();
             if (StringUtils.isEmpty(tag)) {
