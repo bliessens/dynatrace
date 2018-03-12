@@ -1,5 +1,6 @@
 package be.cheops.axon.dynetracing;
 
+import be.cegeka.vconsult.poct.infrastructure.InjectorConfiguration;
 import be.cheops.axon.dynetracing.api.CreateCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.jgroups.commandhandling.JGroupsConnector;
@@ -10,6 +11,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.util.Random;
@@ -20,6 +22,7 @@ import java.util.concurrent.TimeUnit;
         "org.axonframework.eventsourcing.eventstore.jpa",
         "org.axonframework.eventhandling.saga.repository.jpa"
 })
+@Import({InjectorConfiguration.class})
 public class DynetracingApplication implements ApplicationListener<ContextRefreshedEvent> {
 
     private static final Logger LOG = LoggerFactory.getLogger(DynetracingApplication.class);
