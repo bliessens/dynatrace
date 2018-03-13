@@ -29,42 +29,27 @@ class TracingJGroupsConnector implements CommandBusConnector {
 
     private final OneAgentSDK agent;
     private final JGroupsConnector delegate;
+    private final String clusterName;
 
     @Autowired
-    public TracingJGroupsConnector(OneAgentSDK oneAgent, JGroupsConnector delegate) {
+    public TracingJGroupsConnector(OneAgentSDK oneAgent, JGroupsConnector delegate, String clusterName) {
         LOG.info("Using " + TracingJGroupsConnector.class.getSimpleName());
         this.delegate = delegate;
         this.agent = oneAgent;
+        this.clusterName = clusterName;
     }
 
     @Override
     public <C> void send(Member destination, CommandMessage<? extends C> command) throws Exception {
-
         this.send(destination, command, NoOpCallback.INSTANCE);
-
-//        final OutgoingRemoteCallTracer tracer = agent.traceOutgoingRemoteCall("dispatchCommand", delegate.getNodeName(), "DistributedCommandBus", ChannelType.TCP_IP, "jgroups://" + destination.name());
-//        String tag = tracer.getDynatraceStringTag();
-//        if (StringUtils.isEmpty(tag)) {
-//            tag = "fake-" + UUID.randomUUID().toString();
-//        }
-//        try {
-//            LOG.info("Adding trace {} to command {}", tag, command.getPayloadType().getSimpleName());
-//            delegate.send(destination, traceableCommand(command, tag));
-//        } catch (Exception e) {
-//            LOG.error("Reporting trace {} as failure", tag);
-//            tracer.error(e);
-//        } finally {
-//            LOG.info("Completed trace {} ", tag);
-//            tracer.end();
-//        }
     }
 
     @Override
     public <C, R> void send(Member destination, CommandMessage<C> command, CommandCallback<? super C, R> callback) throws Exception {
-        if (destination.local()) {
-            delegate.send(destination, command);
-        } else {
-            final OutgoingRemoteCallTracer tracer = agent.traceOutgoingRemoteCall("dispatchCommand", delegate.getNodeName(), "DistributedCommandBus", ChannelType.TCP_IP, "jgroups://" + destination.name());
+//        if (destination.local()) {
+//            delegate.send(destination, command);
+//        } else {
+        final OutgoingRemoteCallTracer tracer = agent.traceOutgoingRemoteCall(command.getCommandName(), "Command Bus[" + this.clusterName + "]", "DistributedCommandBus", ChannelType.TCP_IP, "jgroups://" + destination.name());
             tracer.setProtocolName("jgroups/custom");
             tracer.start();
             String tag = tracer.getDynatraceStringTag();
@@ -73,7 +58,7 @@ class TracingJGroupsConnector implements CommandBusConnector {
             }
             try {
                 LOG.info("Adding trace {} to command {}", tag, command.getPayloadType().getSimpleName());
-                delegate.send(destination, destination.local() ? command : traceableCommand(command, tag), callback);
+                delegate.send(destination, traceableCommand(command, tag), callback);
             } catch (Exception e) {
                 LOG.error("Reporting trace {} as failure", tag);
                 tracer.error(e);
@@ -82,7 +67,7 @@ class TracingJGroupsConnector implements CommandBusConnector {
                 LOG.info("Completed trace {} ", tag);
                 tracer.end();
             }
-        }
+        // }
     }
 
     private <C> CommandMessage<C> traceableCommand(CommandMessage<C> command, String tag) {

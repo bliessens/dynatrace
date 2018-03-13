@@ -27,7 +27,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-@Configuration
+@Configuration()
 @Profile("tracing")
 public class InjectorConfiguration {
 
@@ -39,12 +39,12 @@ public class InjectorConfiguration {
 
     @Bean
     @Primary
-    public CommandBusConnector interceptingConnector(JGroupsConnector connector, OneAgentSDK oneAgent) {
-        return new TracingJGroupsConnector(oneAgent, connector);
+    public CommandBusConnector interceptingConnector(JGroupsConnector connector, OneAgentSDK oneAgent, @Value("${distributed.clustername}") String clusterName) {
+        return new TracingJGroupsConnector(oneAgent, connector, clusterName);
     }
 
     @Bean
-    public JGroupsConnectorFactoryBean jGroupsConnectorFactoryBean(@Qualifier("localCommandBus") CommandBus localCommandBus,
+    public JGroupsConnectorFactoryBean jGroupsConnectorFactoryBean(@Qualifier("commandBus") CommandBus localCommandBus,
                                                                    @Value("${distributed.clustername}") String clusterName) {
 
         JGroupsConnectorFactoryBean jGroupsConnectorFactoryBean = new JGroupsConnectorFactoryBean();
@@ -55,7 +55,7 @@ public class InjectorConfiguration {
         return jGroupsConnectorFactoryBean;
     }
 
-    @Bean("localCommandBus")
+    @Bean("commandBus")
     public SimpleCommandBus commandBus(TransactionManager axonTransactionManager, TokenExtractionInterceptorFactory interceptorFactory) {
         final SimpleCommandBus bus = new SimpleCommandBus(axonTransactionManager, NoOpMessageMonitor.INSTANCE);
         bus.registerHandlerInterceptor(interceptorFactory.newExtractingInterceptor());
